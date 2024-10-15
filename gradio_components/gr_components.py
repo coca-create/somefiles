@@ -304,7 +304,7 @@ def gr_components():
 
         ### Tab1 イベントリスナー ###
             # ファイルアップロード後、Google Driveに保存してドロップダウンを更新
-        param1.upload(upload_and_save_files, inputs=[upload], outputs=[file_dropdown])
+        param1.upload(fn=upload_and_save_files, inputs=[param1], outputs=[file_dropdown])
         param1.change(fn=param1_change_clear,
                       inputs=[],
                       outputs=[result_srt_content,result_txt_nr_content,result_txt_r_content
