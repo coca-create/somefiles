@@ -64,4 +64,4 @@ css="""
     """
 with gr.Blocks(css=css) as UI:
     gc.gr_components()
-UI.launch(debug=True,inbrowser=True)
+UI.launch(debug=True,share=True)
