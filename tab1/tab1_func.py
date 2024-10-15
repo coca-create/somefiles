@@ -111,14 +111,6 @@ def transcribe(File, Model, Computing, Lang, BeamSize, VadFilter, device, progre
     save_folder = "/content/drive/My Drive/whisper_uploads"
     File = os.path.join(save_folder, File)
     
-    # ファイルが存在するか確認
-    if os.path.exists(file_path):
-        # Whisperで文字起こしを実行
-        result = model.transcribe(file_path)
-        return f"{selected_file_name} の文字起こし結果:\n{result['text']}"
-    else:
-        return "選択されたファイルが見つかりません。"
-
     
     FileName = File
     if Lang == "日本語":
