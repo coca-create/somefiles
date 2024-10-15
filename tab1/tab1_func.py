@@ -108,7 +108,7 @@ def transcribe(File, Model, Computing, Lang, BeamSize, VadFilter, device, progre
         print("ファイルが提供されていません")
         return"", "", "", [], [], "", "", "", "", "",""
 
-    
+    print(File)
     FileName = File
     if Lang == "日本語":
         Lang = "ja"
