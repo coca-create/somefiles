@@ -103,7 +103,7 @@ def create_excel_from_srt_c(srt_content, input_file_name):
     excel_filepath, df_display = create_excel_from_srt_c(srt_content, input_file_name)
     return df_display'''
 
-def transcribe(File, Model, Computing, Lang, BeamSize, VadFilter, device, progress=gr.Progress()):
+def transcribe(File,save_floder Model, Computing, Lang, BeamSize, VadFilter, device, progress=gr.Progress()):
     File=os.path.join(save_folder,File)
     if not File:
         print("ファイルが提供されていません")
