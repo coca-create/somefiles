@@ -27,7 +27,9 @@ def upload_and_save_files(filepaths):
         shutil.copy(filepath, save_path)  # ファイルをGoogle Driveにコピー
     
     # 保存済みファイルリストを返す（ドロップダウンを更新）
-    return gr.update(choices=get_saved_files())
+    filelist=get_saved_files()
+    value=filelist[0]
+    return gr.update(choices=filelist,value=filelist[0])
 def gr_components():
 
     with gr.Blocks() as UI:
