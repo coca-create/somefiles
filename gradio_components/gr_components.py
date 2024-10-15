@@ -326,7 +326,7 @@ def gr_components():
                                translate_srt,translate_nr_txt,translate_r_txt,download_translated_files,button2_df])
         exec_btn.click(
             fn=t1.transcribe, 
-            inputs=[file_dropdown,save_folder,param2, param3, param4, param5, param6,param0],
+            inputs=[file_dropdown,param2, param3, param4, param5, param6,param0],
             outputs=[result_srt_content,result_txt_nr_content, result_txt_r_content, main_files_path,doc_download_path,html_srt,html_nr_txt,html_r_txt,filename_output,dummy,gr_components_df])
         
         t1_clear_Button.click(
