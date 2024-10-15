@@ -29,7 +29,17 @@ def upload_and_save_files(filepaths):
     # 保存済みファイルリストを返す（ドロップダウンを更新）
     filelist=get_saved_files()
     value=filelist[0]
+
     return gr.update(choices=filelist,value=filelist[0])
+
+def select_first_file_on_start():
+    # save_folderからファイルを取得し、最初のファイルを選択
+    file_list = os.listdir(save_folder)
+    if file_list:
+        return gr.update(value=file_list[0])  # 最初のファイルを選択する
+    else:
+        return gr.update(value=None)
+
 def gr_components():
 
     with gr.Blocks() as UI:
@@ -312,6 +322,9 @@ def gr_components():
                       outputs=[result_srt_content,result_txt_nr_content,result_txt_r_content
                                ,main_files_path,doc_download_path,html_srt,html_nr_txt,html_r_txt,filename_output,dummy,gr_components_df,
                                translate_srt,translate_nr_txt,translate_r_txt,download_translated_files,button2_df])
+        
+        file_dropdown.load(fn=select_first_file_on_start, inputs=[], outputs=[file_dropdown])
+        
         exec_btn.click(
             fn=t1.transcribe,
             inputs=[file_dropdown, param2, param3, param4, param5, param6,param0],
