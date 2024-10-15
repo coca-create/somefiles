@@ -323,7 +323,7 @@ def gr_components():
                                ,main_files_path,doc_download_path,html_srt,html_nr_txt,html_r_txt,filename_output,dummy,gr_components_df,
                                translate_srt,translate_nr_txt,translate_r_txt,download_translated_files,button2_df])
         
-        file_dropdown.load(fn=select_first_file_on_start, inputs=[], outputs=[file_dropdown])
+        UI.load(fn=select_first_file_on_start, inputs=[], outputs=[file_dropdown])
         
         exec_btn.click(
             fn=t1.transcribe,
