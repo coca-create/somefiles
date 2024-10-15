@@ -49,7 +49,7 @@ def gr_components():
             gr.Markdown("> 字幕ファイル（srtファイル）、テキストファイル2種、Google翻訳用ワード、エクセルファイルが表示されます。Google翻訳用のファイルが必要な場合はアコーディオンを開いてね。") 
             with gr.Row():
                 with gr.Column():
-                    param1 = gr.File(label="ファイルをアップロードしてね",type="filepath",multiple=True)#,file_types=['mp3','mp4','webm','mkv']
+                    param1 = gr.File(label="ファイルをアップロードしてね",type="filepath",file_count="multiple")#,file_types=['mp3','mp4','webm','mkv']
                     file_dropdown = gr.Dropdown(label="処理するファイルを選択", choices=get_saved_files(), interactive=True)
                     with gr.Row():
                         exec_btn = gr.Button("データファイルの作成", variant="primary")
