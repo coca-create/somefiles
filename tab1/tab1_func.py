@@ -16,7 +16,7 @@ import traceback
 
 def get_audio_duration(filepath):
     try:
-
+        print(filepath)
         audio = AudioSegment.from_file(filepath)
         duration = len(audio) / 1000.0
         return duration
