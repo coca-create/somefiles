@@ -21,19 +21,19 @@ base_path = get_base_path()
 
 current_directory = os.getcwd()
 #print(f"Current directory: {current_directory}")
-cuda_path = os.path.join(base_path,"cuda")
-cudnn_path = os.path.join(base_path, "cuda")
-ffmpeg_path = os.path.join(base_path,"bin")
-ffprobe_path = os.path.join(base_path,"bin")
+#cuda_path = os.path.join(base_path,"cuda")
+#cudnn_path = os.path.join(base_path, "cuda")
+#ffmpeg_path = os.path.join(base_path,"bin")
+#ffprobe_path = os.path.join(base_path,"bin")
 #python_path = os.path.join(base_path, "python311")
 
-os.environ["FFMPEG_PATH"] = ffmpeg_path
-os.environ["FFPROBE_PATH"] = ffprobe_path
+#os.environ["FFMPEG_PATH"] = ffmpeg_path
+#os.environ["FFPROBE_PATH"] = ffprobe_path
 #os.environ["PYTHON_PATH"] = python_path
-os.environ["CUDA_PATH"] = cuda_path
-os.environ["CUDNN_PATH"] = cudnn_path
+#os.environ["CUDA_PATH"] = cuda_path
+#os.environ["CUDNN_PATH"] = cudnn_path
 
-os.environ["PATH"] = cuda_path + ";" + cudnn_path + ";" + ffmpeg_path + ";" + ffprobe_path + ";" + os.environ["PATH"]
+#os.environ["PATH"] = cuda_path + ";" + cudnn_path + ";" + ffmpeg_path + ";" + ffprobe_path + ";" + os.environ["PATH"]
 css="""
 
     .my-table-container {
