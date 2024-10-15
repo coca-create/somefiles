@@ -18,7 +18,7 @@ def get_saved_files():
     return []
 
 # アップロードされたファイルを保存し、Google Driveに保存する関数
-def upload_and_save_files(files):
+'''def upload_and_save_files(files):
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)  # 保存フォルダがなければ作成
 
@@ -31,9 +31,23 @@ def upload_and_save_files(files):
         saved_files.append(file.name)
     
     # 保存済みファイルリストを返す（ドロップダウンを更新）
-    return get_saved_files()
+    return get_saved_files()'''
 
+def upload_and_save_files(files):
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)  # 保存フォルダがなければ作成
 
+    saved_files = []
+    
+    # アップロードされたファイルをGoogle Driveに保存
+    for file in files:
+        save_path = os.path.join(save_folder, file.name)
+        with open(save_path, 'wb') as f:
+            f.write(file.read())
+        saved_files.append(file.name)
+    
+    # 保存済みファイルリストを返す（ドロップダウンを更新）
+    return gr.Dropdown.update(choices=get_saved_files())
 # Gradio　UI
 def gr_components():
 
