@@ -6,10 +6,7 @@ from gradio_components import gr_components as gc
 import warnings
 
 warnings.filterwarnings("ignore", category=FutureWarning)
-#print("Current working directory:", os.getcwd())
-# 必要なら作業ディレクトリをスクリプトのディレクトリに変更
-script_dir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(script_dir)
+
 
 def get_base_path():
     if getattr(sys, 'frozen', False):
