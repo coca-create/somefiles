@@ -3,15 +3,26 @@ import os
 import sys
 import gradio as gr
 from gradio_components import gr_components as gc
-import warnings
+#import warnings
 
-warnings.filterwarnings("ignore", category=FutureWarning)
+#warnings.filterwarnings("ignore", category=FutureWarning)
+#print("Current working directory:", os.getcwd())
+# 必要なら作業ディレクトリをスクリプトのディレクトリに変更
+'''script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
 
+def get_base_path():
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    else:
+        return os.path.dirname(os.path.abspath(__file__))
 
+base_path = get_base_path()'''
+
+#current_directory = os.getcwd()
 #print(f"Current directory: {current_directory}")
 #cuda_path = os.path.join(base_path,"cuda")
-#cudnn_path = os.path.join(base_path, "cuda")
-#ffmpeg_path = os.path.join(base_path,"bin")
+##ffmpeg_path = os.path.join(base_path,"bin")
 #ffprobe_path = os.path.join(base_path,"bin")
 #python_path = os.path.join(base_path, "python311")
 
