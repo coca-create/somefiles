@@ -325,7 +325,7 @@ def gr_components():
 
         ### Tab1 イベントリスナー ###
         # アプリ起動時に既存ファイルをドロップダウンに表示する
-        file_dropdown.update(choices=get_saved_files())
+      
         
         # ファイルアップロード後、Google Driveに保存してドロップダウンを更新
         upload.upload(upload_and_save_files, inputs=[upload], outputs=[file_dropdown])
