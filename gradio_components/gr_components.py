@@ -18,36 +18,25 @@ def get_saved_files():
     return []
 
 # アップロードされたファイルを保存し、Google Driveに保存する関数
-'''def upload_and_save_files(files):
+
+
+# アップロードされたファイルをGoogle Driveに保存する関数
+def upload_and_save_files(filepaths):
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)  # 保存フォルダがなければ作成
 
     saved_files = []
-    # アップロードされたファイルをGoogle Driveに保存
-    for file in files:
-        save_path = os.path.join(save_folder, file.name)
-        with open(save_path, 'wb') as f:
-            f.write(file.read())
-        saved_files.append(file.name)
-    
-    # 保存済みファイルリストを返す（ドロップダウンを更新）
-    return get_saved_files()'''
 
-def upload_and_save_files(files):
-    if not os.path.exists(save_folder):
-        os.makedirs(save_folder)  # 保存フォルダがなければ作成
-
-    saved_files = []
-    
-    # アップロードされたファイルをGoogle Driveに保存
-    for file in files:
-        save_path = os.path.join(save_folder, file.name)
-        with open(save_path, 'wb') as f:
-            f.write(file.read())
-        saved_files.append(file.name)
+    # アップロードされたファイルをGoogle Driveにコピー
+    for filepath in filepaths:
+        save_path = os.path.join(save_folder, os.path.basename(filepath))  # ファイル名を保持して保存
+        shutil.copy(filepath, save_path)  # ファイルをGoogle Driveにコピー
+        saved_files.append(save_path)
     
     # 保存済みファイルリストを返す（ドロップダウンを更新）
     return gr.Dropdown.update(choices=get_saved_files())
+
+
 # Gradio　UI
 def gr_components():
 
@@ -64,7 +53,7 @@ def gr_components():
             gr.Markdown("> 字幕ファイル（srtファイル）、テキストファイル2種、Google翻訳用ワード、エクセルファイルが表示されます。Google翻訳用のファイルが必要な場合はアコーディオンを開いてね。") 
             with gr.Row():
                 with gr.Column():
-                    param1 = gr.File(label="ファイルをアップロードしてね",type="binary",file_count="multiple")#,file_types=['mp3','mp4','webm','mkv']
+                    param1 = gr.File(label="ファイルをアップロードしてね",type="filepath",file_count="multiple")#,file_types=['mp3','mp4','webm','mkv']
                     file_dropdown = gr.Dropdown(label="処理するファイルを選択", choices=get_saved_files(), interactive=True)
                     with gr.Row():
                         exec_btn = gr.Button("データファイルの作成", variant="primary")
