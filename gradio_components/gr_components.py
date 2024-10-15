@@ -12,30 +12,28 @@ import os
 import shutil
 
 # Colab用 UI
+# Google Driveの保存フォルダのパスを定義
 save_folder = "/content/drive/My Drive/whisper_uploads"
+
+# 保存済みファイルを取得し、ドロップダウン用にリストを生成する関数
 def get_saved_files():
     if os.path.exists(save_folder):
         return os.listdir(save_folder)  # 保存済みファイルの名前を取得
     return []
 
-# アップロードされたファイルを保存し、Google Driveに保存する関数
-
-
-# アップロードされたファイルをGoogle Driveに保存する関数
+# アップロードされたファイルをGoogle Driveに保存し、選択肢を更新する関数
 def upload_and_save_files(filepaths):
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)  # 保存フォルダがなければ作成
 
-    saved_files = []
-
-    # アップロードされたファイルをGoogle Driveにコピー
+    # アップロードされたファイルをGoogle Driveに保存
     for filepath in filepaths:
         save_path = os.path.join(save_folder, os.path.basename(filepath))  # ファイル名を保持して保存
         shutil.copy(filepath, save_path)  # ファイルをGoogle Driveにコピー
-        saved_files.append(save_path)
     
     # 保存済みファイルリストを返す（ドロップダウンを更新）
-    return gr.Dropdown.update(choices=get_saved_files())
+    return gr.update(choices=get_saved_files())
+
 
 
 # Gradio　UI
