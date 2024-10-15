@@ -9,8 +9,31 @@ from tab7 import tab7_func as t7
 from tab8 import tab8_func as t8
 import pandas as pd
 
+# Colab用 UI
+save_folder = "/content/drive/My Drive/whisper_uploads"
+def get_saved_files():
+    if os.path.exists(save_folder):
+        return os.listdir(save_folder)  # 保存済みファイルの名前を取得
+    return []
+
+# アップロードされたファイルを保存し、Google Driveに保存する関数
+def upload_and_save_files(files):
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)  # 保存フォルダがなければ作成
+
+    saved_files = []
+    # アップロードされたファイルをGoogle Driveに保存
+    for file in files:
+        save_path = os.path.join(save_folder, file.name)
+        with open(save_path, 'wb') as f:
+            f.write(file.read())
+        saved_files.append(file.name)
+    
+    # 保存済みファイルリストを返す（ドロップダウンを更新）
+    return get_saved_files()
 
 
+# Gradio　UI
 def gr_components():
 
     with gr.Blocks() as UI:
@@ -26,7 +49,8 @@ def gr_components():
             gr.Markdown("> 字幕ファイル（srtファイル）、テキストファイル2種、Google翻訳用ワード、エクセルファイルが表示されます。Google翻訳用のファイルが必要な場合はアコーディオンを開いてね。") 
             with gr.Row():
                 with gr.Column():
-                    param1 = gr.File(label="ファイルをアップロードしてね",type="filepath")#,file_types=['mp3','mp4','webm','mkv']
+                    param1 = gr.File(label="ファイルをアップロードしてね",type="filepath",multiple=True)#,file_types=['mp3','mp4','webm','mkv']
+                    file_dropdown = gr.Dropdown(label="処理するファイルを選択", choices=get_saved_files(), interactive=True)
                     with gr.Row():
                         exec_btn = gr.Button("データファイルの作成", variant="primary")
                         t1_clear_Button=gr.Button(value='クリア')
@@ -285,6 +309,13 @@ def gr_components():
             return None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 
         ### Tab1 イベントリスナー ###
+        # アプリ起動時に既存ファイルをドロップダウンに表示する
+        file_dropdown.update(choices=get_saved_files())
+        
+        # ファイルアップロード後、Google Driveに保存してドロップダウンを更新
+        upload.upload(upload_and_save_files, inputs=[upload], outputs=[file_dropdown])
+
+
         param1.change(fn=param1_change_clear,
                       inputs=[],
                       outputs=[result_srt_content,result_txt_nr_content,result_txt_r_content
@@ -292,7 +323,7 @@ def gr_components():
                                translate_srt,translate_nr_txt,translate_r_txt,download_translated_files,button2_df])
         exec_btn.click(
             fn=t1.transcribe,
-            inputs=[param1, param2, param3, param4, param5, param6,param0],
+            inputs=[file_dropdown, param2, param3, param4, param5, param6,param0],
             outputs=[result_srt_content,result_txt_nr_content, result_txt_r_content, main_files_path,doc_download_path,html_srt,html_nr_txt,html_r_txt,filename_output,dummy,gr_components_df])
         
         t1_clear_Button.click(
