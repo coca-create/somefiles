@@ -9,6 +9,7 @@ from tab7 import tab7_func as t7
 from tab8 import tab8_func as t8
 import pandas as pd
 import os
+import shutil
 
 # Colab用 UI
 save_folder = "/content/drive/My Drive/whisper_uploads"
