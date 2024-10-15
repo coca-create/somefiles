@@ -328,7 +328,7 @@ def gr_components():
       
         
         # ファイルアップロード後、Google Driveに保存してドロップダウンを更新
-        upload.upload(upload_and_save_files, inputs=[param1], outputs=[file_dropdown])
+        param1.upload(upload_and_save_files, inputs=[param1], outputs=[file_dropdown])
 
 
         param1.change(fn=param1_change_clear,
