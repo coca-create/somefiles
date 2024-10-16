@@ -298,7 +298,13 @@ def gr_components():
         ##クリアボタン追加分をまとめる。
 
         def update_file_dropdown():
-            return gr.update(choices=get_saved_files())
+            file_list = get_saved_files()
+            
+            if file_list:
+                return gr.update(choices=file_list, value=file_list[0])  # リストの最初のファイルを選択
+            else:
+                return gr.update(choices=[], value=None)  # リストが空の場合はNoneを設定
+            
         def t1_clear():
             empty_html_table = pd.DataFrame({'1': [''], '2': [''], '3': ['']}).to_html(index=False)
             #new_file_display=select_first_file_on_start()
