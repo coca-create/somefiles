@@ -113,7 +113,7 @@ def split_vtt_segment(segment):
     text = segment['text'].strip()
     
     # 正規表現で分割しつつ、区切り文字をキャプチャする
-    parts = re.split(r'([。？])', text)
+    parts = re.split(r'([。？ ?])', text)
     
     split_segments = []
     start_time = segment['start']
@@ -232,7 +232,7 @@ def split_srt_segment(segment):
     text = segment.content.strip()
     
     # 正規表現を使って「。」と「？」で分割し、区切り文字もキャプチャ
-    parts = re.split(r'([。？])', text)
+    parts = re.split(r'([。？ ?])', text)
     
     split_segments = []
     start_time = segment.start
