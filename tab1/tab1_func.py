@@ -13,6 +13,7 @@ import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
 import traceback
+import shutil
 
 def get_audio_duration(filepath):
     try:
@@ -109,7 +110,9 @@ def transcribe(File, Model, Computing, Lang, BeamSize, VadFilter, device, progre
         return"", "", "", [], [], "", "", "", "", "",""
     
     save_folder = "/content/drive/My Drive/whisper_uploads"
+
     File = os.path.join(save_folder, File)
+    
     
     
     FileName = File
@@ -397,6 +400,18 @@ def transcribe(File, Model, Computing, Lang, BeamSize, VadFilter, device, progre
         filename_copy = input_file_name
         srt_dummy_output_path = srt_output_path
 
+
+        destination_folder = '/content/drive/My Drive/whisper_finished'
+        # フォルダが存在しなければ作成
+        os.makedirs(destination_folder, exist_ok=True)
+
+        # 移動させたいファイルのパス（例）
+        file_to_move = File
+
+        # ファイルを移動
+        shutil.move(file_to_move, destination_folder)
+
+        print(f"{file_to_move} を {destination_folder} に移動しました")
         return srt_content, txt_nr_content, txt_r_content, main_files, doc_files ,html_srt, html_nr_txt, html_r_txt, filename_copy, srt_dummy_output_path, df_display
     except Exception as e:
         print(f"ファイル処理中にエラーが発生しました: {e}")
