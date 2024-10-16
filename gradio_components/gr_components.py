@@ -9,6 +9,7 @@ from tab7 import tab7_func as t7
 from tab8 import tab8_func as t8
 import pandas as pd
 import os
+import shutil
 
 save_folder = "/content/drive/My Drive/whisper_uploads"
 def get_saved_files():
@@ -28,7 +29,7 @@ def upload_and_save_files(filepaths):
     
     # 保存済みファイルリストを返す（ドロップダウンを更新）
     filelist=get_saved_files()
-    value=filelist[0]
+    #value=filelist[0]
 
     return gr.update(choices=filelist,value=filelist[0])
 
@@ -297,7 +298,8 @@ def gr_components():
         ##クリアボタン追加分をまとめる。
         def t1_clear():
             empty_html_table = pd.DataFrame({'1': [''], '2': [''], '3': ['']}).to_html(index=False)
-            return None,"","","",[],[],"","","","","",empty_html_table
+            new_file_display=select_first_file_on_start()
+            return None,"","","",[],[],"","","","","",empty_html_table,new_file_display
         def t2_clear():
             return "","","",[],pd.DataFrame({'1': [''], '2': [''],'3': ['']})
         def t4_clear():
@@ -331,7 +333,7 @@ def gr_components():
             outputs=[result_srt_content,result_txt_nr_content, result_txt_r_content, main_files_path,doc_download_path,html_srt,html_nr_txt,html_r_txt,filename_output,dummy,gr_components_df])
         
         t1_clear_Button.click(
-            fn=t1_clear,inputs=[],outputs=[param1,result_srt_content,result_txt_nr_content,result_txt_r_content,main_files_path,doc_download_path,html_srt,html_nr_txt,html_r_txt,filename_output,dummy,gr_components_df]
+            fn=t1_clear,inputs=[],outputs=[param1,result_srt_content,result_txt_nr_content,result_txt_r_content,main_files_path,doc_download_path,html_srt,html_nr_txt,html_r_txt,filename_output,dummy,gr_components_df,file_dropdown]
         )
         ### Tab2 イベントリスナー ###
         
