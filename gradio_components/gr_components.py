@@ -296,10 +296,16 @@ def gr_components():
 
 
         ##クリアボタン追加分をまとめる。
+
+        def update_file_dropdown():
+            return gr.update(choices=get_saved_files())
         def t1_clear():
             empty_html_table = pd.DataFrame({'1': [''], '2': [''], '3': ['']}).to_html(index=False)
-            new_file_display=select_first_file_on_start()
-            return None,"","","",[],[],"","","","","",empty_html_table,new_file_display
+            #new_file_display=select_first_file_on_start()
+            return None,"","","",[],[],"","","","","",empty_html_table,update_file_dropdown()
+        
+
+    
         def t2_clear():
             return "","","",[],pd.DataFrame({'1': [''], '2': [''],'3': ['']})
         def t4_clear():
@@ -333,7 +339,7 @@ def gr_components():
             outputs=[result_srt_content,result_txt_nr_content, result_txt_r_content, main_files_path,doc_download_path,html_srt,html_nr_txt,html_r_txt,filename_output,dummy,gr_components_df])
         
         t1_clear_Button.click(
-            fn=t1_clear,inputs=[],outputs=[param1,result_srt_content,result_txt_nr_content,result_txt_r_content,main_files_path,doc_download_path,html_srt,html_nr_txt,html_r_txt,filename_output,dummy,gr_components_df,file_dropdown]
+            fn=t1_clear,inputs=[],outputs=[param1,result_srt_content,result_txt_nr_content,result_txt_r_content,main_files_path,doc_download_path,html_srt,html_nr_txt,html_r_txt,filename_output,dummy,gr_components_df,file_dropdown]#file_dropdown
         )
         ### Tab2 イベントリスナー ###
         
