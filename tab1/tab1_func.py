@@ -212,7 +212,7 @@ def transcribe(File, Model, Computing, Lang, BeamSize, VadFilter, device, progre
             segment_text += word_info["word"]
             segment_end = word_info["end"]
             
-            if word_info["word"].endswith('.'):
+            if word_info["word"].endswith('.') or word_info["word"].endswith('?'):
                 srt_entries.append({
                     "number": entry_number,
                     "start": segment_start,
