@@ -6,6 +6,7 @@ import srt
 import zipfile
 import tempfile
 from datetime import datetime
+from tab7 import tab7_func as t7
 
 '''def parse_vtt_time(time_str):
     match = re.match(r"(?:(\d+):)?(\d{2}):(\d{2})\.(\d{3})", time_str)
@@ -149,7 +150,7 @@ def split_vtt_segment(segment):
 def parse_vtt_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-
+    lines=t7.webvtt_rm(lines)
     captions = []
     caption = {'id': None, 'start': None, 'end': None, 'text': ''}
     for line in lines:
