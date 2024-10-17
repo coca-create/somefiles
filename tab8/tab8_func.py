@@ -26,40 +26,50 @@ def format_vtt_time(delta):
     milliseconds = delta.microseconds // 1000
     return f"{hours}:{minutes:02}:{seconds:02}.{milliseconds:03}"
 
-def split_vtt_segment(segment):
+def split_vtt_segment(segment, current_id):
     text = segment['text'].strip()
-    parts = text.split('。')
+    
+    # 「。」と「？」で分割し、区切り文字もキャプチャ
+    parts = re.split(r'([。?？])', text)
+    
     split_segments = []
     start_time = segment['start']
     end_time = segment['end']
     total_duration = (end_time - start_time).total_seconds()
     total_chars = len(text)
 
-    #print(f"Segment ID: {segment['id']}, Start: {start_time}, End: {end_time}, Text: {text}")
-
     current_start = start_time
 
-    for i, part in enumerate(parts):
-        if i < len(parts) - 1:
-            part += '。'
+    # 区切り文字がなくても最後の部分を含める
+    for i in range(0, len(parts), 2):
+        part = parts[i]
+        if i + 1 < len(parts):
+            # 区切り文字（「。」や「？」）を取得
+            delimiter = parts[i + 1]
+            part += delimiter  # 区切り文字を追加
+        else:
+            delimiter = ''  # 最後の区切り文字がない場合
+
         if part:
             part_duration = total_duration * len(part) / total_chars
             part_end = current_start + timedelta(seconds=part_duration)
+            # 新しいIDを割り当てる
             split_segments.append({
-                'id': segment['id'],
+                'id': current_id,
                 'start': current_start,
                 'end': part_end,
                 'text': part
             })
             current_start = part_end
-            #print(f"  Split Part: {part}, Start: {current_start}, End: {part_end}")
+            current_id += 1  # IDをインクリメント
 
-    return split_segments
+    return split_segments, current_id
 
 def parse_vtt_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
     lines=t7.webvtt_rm(lines)
+    print("py")
     captions = []
     caption = {'id': None, 'start': None, 'end': None, 'text': ''}
     for line in lines:
@@ -92,47 +102,65 @@ def save_vtt_file(captions, file_path):
 
 def split_vtt_captions(captions):
     split_captions = []
+    current_id = 1  # IDの開始値
     for caption in captions:
-        split_captions.extend(split_vtt_segment(caption))
+        # 分割したキャプションと次のIDを取得
+        split_segments, current_id = split_vtt_segment(caption, current_id)
+        split_captions.extend(split_segments)
     return split_captions
 
-def split_srt_segment(segment):
-    text = segment.content
-    parts = text.split('。')
+def split_srt_segment(segment, current_index):
+    text = segment.content.strip()
+    
+    # 正規表現で「。」と「？」を区切り文字として分割し、区切り文字もキャプチャ
+    parts = re.split(r'([。？?])', text)
+    
     split_segments = []
     start_time = segment.start
     end_time = segment.end
     total_duration = (end_time - start_time).total_seconds()
     total_chars = len(text)
 
-    #print(f"Segment Index: {segment.index}, Start: {start_time}, End: {end_time}, Text: {text}")
-
     current_start = start_time
 
-    for i, part in enumerate(parts):
-        if i < len(parts) - 1:
-            part += '。'
+    # 2ステップずつ進んで、パートと区切り文字を処理
+    for i in range(0, len(parts), 2):
+        part = parts[i]
+        if i + 1 < len(parts):
+            # 区切り文字（「。」や「？」）を取得
+            delimiter = parts[i + 1]
+            part += delimiter  # パートに区切り文字を追加
+        else:
+            delimiter = ''  # 区切り文字がない場合
+
         if part:
             part_duration = total_duration * len(part) / total_chars
             part_end = current_start + timedelta(seconds=part_duration)
-            split_segments.append(srt.Subtitle(index=segment.index, start=current_start, end=part_end, content=part))
+            # 新しいユニークなID（current_index）を割り当てる
+            split_segments.append(srt.Subtitle(
+                index=current_index,  # 新しいIDを設定
+                start=current_start,
+                end=part_end,
+                content=part
+            ))
             current_start = part_end
-            #print(f"  Split Part: {part}, Start: {current_start}, End: {part_end}")
+            current_index += 1  # IDをインクリメントしてユニークにする
 
-    return split_segments
+    return split_segments, current_index
 
 def split_srt_file(input_file, output_file):
     with open(input_file, 'r', encoding='utf-8') as f:
         subtitles = list(srt.parse(f.read()))
 
     new_subtitles = []
+    current_index = 1  # 新しいIDの開始値
     for subtitle in subtitles:
-        new_subtitles.extend(split_srt_segment(subtitle))
-
+        # 分割後のセグメントと次のインデックスを取得
+        split_segments, current_index = split_srt_segment(subtitle, current_index)
+        new_subtitles.extend(split_segments)
 
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write(srt.compose(new_subtitles))
-
 def process_files(files):
     results = []
 
