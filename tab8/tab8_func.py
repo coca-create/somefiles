@@ -8,7 +8,7 @@ import tempfile
 from datetime import datetime
 from tab7 import tab7_func as t7
 
-'''def parse_vtt_time(time_str):
+def parse_vtt_time(time_str):
     match = re.match(r"(?:(\d+):)?(\d{2}):(\d{2})\.(\d{3})", time_str)
     if not match:
         raise ValueError(f"Invalid time format: {time_str}")
@@ -59,97 +59,6 @@ def split_vtt_segment(segment):
 def parse_vtt_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-
-    captions = []
-    caption = {'id': None, 'start': None, 'end': None, 'text': ''}
-    for line in lines:
-        line = line.strip()
-        if not line:
-            if caption['start'] is not None:
-                captions.append(caption)
-                caption = {'id': None, 'start': None, 'end': None, 'text': ''}
-        elif re.match(r"\d+", line) and caption['id'] is None:
-            caption['id'] = line
-        elif '-->' in line:
-            times = line.split(' --> ')
-            caption['start'] = parse_vtt_time(times[0])
-            caption['end'] = parse_vtt_time(times[1])
-        else:
-            caption['text'] += (line + ' ')
-
-    if caption['start'] is not None:
-        captions.append(caption)
-
-    return captions
-
-def save_vtt_file(captions, file_path):
-    with open(file_path, 'w', encoding='utf-8') as f:
-        f.write('WEBVTT\n\n')
-        for caption in captions:
-            f.write(f"{caption['id']}\n")
-            f.write(f"{format_vtt_time(caption['start'])} --> {format_vtt_time(caption['end'])}\n")
-            f.write(f"{caption['text'].strip()}\n\n")'''
-import re
-from datetime import timedelta
-
-def parse_vtt_time(time_str):
-    match = re.match(r"(?:(\d+):)?(\d{2}):(\d{2})\.(\d{3})", time_str)
-    if not match:
-        raise ValueError(f"Invalid time format: {time_str}")
-    groups = match.groups()
-    hours = int(groups[0] or 0)
-    minutes = int(groups[1])
-    seconds = int(groups[2])
-    milliseconds = int(groups[3])
-    return timedelta(hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
-
-def format_vtt_time(delta):
-    total_seconds = int(delta.total_seconds())
-    hours, remainder = divmod(total_seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    milliseconds = delta.microseconds // 1000
-    return f"{hours}:{minutes:02}:{seconds:02}.{milliseconds:03}"
-
-def split_vtt_segment(segment):
-    text = segment['text'].strip()
-    
-    # 正規表現で分割しつつ、区切り文字をキャプチャする
-    parts = re.split(r'([。？ ?])', text)
-    
-    split_segments = []
-    start_time = segment['start']
-    end_time = segment['end']
-    total_duration = (end_time - start_time).total_seconds()
-    total_chars = len(text)
-
-    current_start = start_time
-
-    for i in range(0, len(parts), 2):
-        part = parts[i]
-        if i + 1 < len(parts):
-            # 区切り文字（「。」や「？」）を取得
-            delimiter = parts[i + 1]
-            part += delimiter  # 元の区切り文字を追加
-        else:
-            delimiter = ''  # 区切り文字がない場合
-
-        if part:
-            part_duration = total_duration * len(part) / total_chars
-            part_end = current_start + timedelta(seconds=part_duration)
-            split_segments.append({
-                'id': segment['id'],
-                'start': current_start,
-                'end': part_end,
-                'text': part,
-                'delimiter': delimiter  # 区切り文字を保持
-            })
-            current_start = part_end
-
-    return split_segments
-
-def parse_vtt_file(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
     lines=t7.webvtt_rm(lines)
     captions = []
     caption = {'id': None, 'start': None, 'end': None, 'text': ''}
@@ -181,14 +90,13 @@ def save_vtt_file(captions, file_path):
             f.write(f"{format_vtt_time(caption['start'])} --> {format_vtt_time(caption['end'])}\n")
             f.write(f"{caption['text'].strip()}\n\n")
 
-
 def split_vtt_captions(captions):
     split_captions = []
     for caption in captions:
         split_captions.extend(split_vtt_segment(caption))
     return split_captions
 
-'''def split_srt_segment(segment):
+def split_srt_segment(segment):
     text = segment.content
     parts = text.split('。')
     split_segments = []
@@ -221,59 +129,6 @@ def split_srt_file(input_file, output_file):
     for subtitle in subtitles:
         new_subtitles.extend(split_srt_segment(subtitle))
 
-
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(srt.compose(new_subtitles))
-'''
-import re
-import srt
-from datetime import timedelta
-
-def split_srt_segment(segment):
-    text = segment.content.strip()
-    
-    # 正規表現を使って「。」と「？」で分割し、区切り文字もキャプチャ
-    parts = re.split(r'([。？ ?])', text)
-    
-    split_segments = []
-    start_time = segment.start
-    end_time = segment.end
-    total_duration = (end_time - start_time).total_seconds()
-    total_chars = len(text)
-
-    current_start = start_time
-
-    # 2ステップずつ進んで、パートと区切り文字を処理
-    for i in range(0, len(parts), 2):
-        part = parts[i]
-        if i + 1 < len(parts):
-            # 区切り文字（「。」や「？」）を取得
-            delimiter = parts[i + 1]
-            part += delimiter  # パートに区切り文字を追加
-        else:
-            delimiter = ''  # 区切り文字がない場合
-
-        if part:
-            part_duration = total_duration * len(part) / total_chars
-            part_end = current_start + timedelta(seconds=part_duration)
-            # 新しいSubtitleオブジェクトを作成し、元の区切り文字を保持
-            split_segments.append(srt.Subtitle(
-                index=segment.index,
-                start=current_start,
-                end=part_end,
-                content=part
-            ))
-            current_start = part_end
-
-    return split_segments
-
-def split_srt_file(input_file, output_file):
-    with open(input_file, 'r', encoding='utf-8') as f:
-        subtitles = list(srt.parse(f.read()))
-
-    new_subtitles = []
-    for subtitle in subtitles:
-        new_subtitles.extend(split_srt_segment(subtitle))
 
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write(srt.compose(new_subtitles))
