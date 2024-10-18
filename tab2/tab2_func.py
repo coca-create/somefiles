@@ -134,6 +134,8 @@ def create_translate_files(copied_filename, translate_srt, translate_nr_txt, tra
                 #subtitle_content=re.sub(r'\s+', '', subtitle_content)
                 subtitle_content=subtitle_content.replace("\n","")
                 subtitle_content=subtitle_content.replace(" ","^").replace("^^","^")
+                subtitle_content = re.sub(r'\s+', '', subtitle_content)
+
                 patterns_replacements = [
                     (r'(\d)\^+(\d)', r'\1\2'),  # ① 数字と数字の間
                     (r'(\d)\^+(,)', r'\1\2'),   # ④ 数字とカンマの間
@@ -143,7 +145,7 @@ def create_translate_files(copied_filename, translate_srt, translate_nr_txt, tra
                 ]    
                 for pattern, replacement in patterns_replacements:
                     subtitle_content = re.sub(pattern, replacement, subtitle_content)    
-                subtitle_content = re.sub(r'\s+', '', subtitle_content)
+                
                 pattern = re.compile(r'(\d{1,4})\^*(\d{2}:\d{2}:\d{2},\d{3}\^*-->\^*\d{2}:\d{2}:\d{2},\d{3})')
                 matches = pattern.findall(subtitle_content)
 

@@ -353,7 +353,7 @@ def process_file(input_file):
         file.write(output)
 
     # Add the output to a .docx file
-    doc = Document()
+    '''doc = Document()
     doc.add_paragraph(output)
     basename = os.path.splitext(input_file)[0]
     timestamp_patch = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -368,7 +368,7 @@ def process_file(input_file):
     else:
         pass
     temp_docx_file=os.path.join(temp_dir,docx_file)
-    doc.save(temp_docx_file)
+    doc.save(temp_docx_file)'''
 
     t7_excel_file,t7_df=t3.create_excel_from_srt(english_path=temp_output_file,tail="")
     output_html = f"""<head><meta charset="UTF-8"></head><body><pre style="white-space: pre-wrap; overflow-y: auto; height: 500px; word-wrap: break-word; padding: 10px; font-family: inherit; font-size: inherit;">{output}</pre></body>"""
@@ -392,6 +392,8 @@ def correct_srt_format_from_text(text):
         # Reconstruct the SRT format
         content=content.replace("\n","")
         content=content.replace(" ","^").replace("^^","^")
+        content = re.sub(r'\s+', '', content) 
+
         patterns_replacements = [
             (r'(\d)\^+(\d)', r'\1\2'),  # ① 数字と数字の間
             (r'(\d)\^+(,)', r'\1\2'),   # ④ 数字とカンマの間
@@ -401,7 +403,7 @@ def correct_srt_format_from_text(text):
         ]    
         for eachpattern, replacement in patterns_replacements:
             content = re.sub(eachpattern, replacement, content)    
-        content = re.sub(r'\s+', '', content) 
+        
 
         pattern = re.compile(r'(\d{1,4})\^*(\d{2}:\d{2}:\d{2},\d{3}\^*-->\^*\d{2}:\d{2}:\d{2},\d{3})')
         #pattern = re.compile(r'(\d{1,4})\s*(\d{2}:\d{2}:\d{2},\d{3})\s*-->\s*(\d{2}:\d{2}:\d{2},\d{3})')
@@ -469,8 +471,10 @@ def correct_vtt_format_from_text(text):
         # Reconstruct the VTT format
         content =webvtt_remover(content)
         #content = re.sub(r'\s+', '', content)
-        content=content.replace(" ","^").replace("^^","^")
         content=content.replace("\n","")
+        content=content.replace(" ","^").replace("^^","^")
+        content = re.sub(r'\s+', '', content) 
+
         patterns_replacements = [
             (r'(\d)\^+(\d)', r'\1\2'),  # ① 数字と数字の間
             (r'(\d)\^+(,)', r'\1\2'),   # ④ 数字とカンマの間
@@ -480,9 +484,7 @@ def correct_vtt_format_from_text(text):
         ]    
         for eachpattern, replacement in patterns_replacements:
             content = re.sub(eachpattern, replacement, content)    
-        content = re.sub(r'\s+', '', content) 
-
-
+        
 
         pattern = re.compile(r'(\d{1,4})\^*(\d{1}:\d{2}:\d{2}\.\d{3}\^*-->\^*\d{1}:\d{2}:\d{2}\.\d{3})')
         #pattern = re.compile(r'(\d{1,4})(\d{1}:\d{2}:\d{2}\.\d{3})\s*-->\s*(\d{1}:\d{2}:\d{2}\.\d{3})')

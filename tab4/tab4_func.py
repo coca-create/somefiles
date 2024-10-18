@@ -207,6 +207,8 @@ def save_translated_content(file, translated_text):
             #content = re.sub(r'\s+', '', content)
             content=content.replace("\n","")
             content=content.replace(" ","^").replace("^^","^")
+            content = re.sub(r'\s+', '', content)
+            
             patterns_replacements = [
                 (r'(\d)\^+(\d)', r'\1\2'),  # ① 数字と数字の間
                 (r'(\d)\^+(,)', r'\1\2'),   # ④ 数字とカンマの間
@@ -216,7 +218,7 @@ def save_translated_content(file, translated_text):
             ]    
             for pattern, replacement in patterns_replacements:
                 content = re.sub(pattern, replacement, content)    
-            content = re.sub(r'\s+', '', content)
+            
 
             if file_extension == '.srt':
                 pattern = re.compile(r'(\d{1,4})\^*(\d{2}:\d{2}:\d{2},\d{3}\^*-->\^*\d{2}:\d{2}:\d{2},\d{3})')
