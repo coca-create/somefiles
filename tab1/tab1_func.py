@@ -14,7 +14,7 @@ from tqdm import tqdm
 from datetime import datetime
 import traceback
 import shutil
-from gr_components import gr_components as com
+from gradio_components import gr_components as com
 
 def get_audio_duration(filepath):
     try:
